@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const { createTicket, getTickets, assignTicket, updateTicketStatus } = require("../controllers/ticketController");
-const { addComment, getComments, updateComment } = require("../controllers/commentController");
+const { addComment, getComments, updateComment, deleteComment } = require("../controllers/commentController");
 
 const {protect} = require("../middlewares/authMiddleware");
 const {authorizeRoles} = require("../middlewares/roleMiddleware");
@@ -17,5 +17,6 @@ router.patch("/:id/status", authorizeRoles("MANAGER", "SUPPORT"), updateTicketSt
 router.post("/:id/comments", addComment);
 router.get("/:id/comments", getComments);
 router.patch("/comments/:id", authorizeRoles("MANAGER"), updateComment);
+router.delete("/comments/:id", authorizeRoles("MANAGER"), deleteComment);
 
 module.exports = router;

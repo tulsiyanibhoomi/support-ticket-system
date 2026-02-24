@@ -86,6 +86,9 @@ const Comment = {
             join roles r on u.role_id=r.id
             where u.id=?
         `, [userId]);
+        if(userRows.length==0){
+            throw new ApiError(401, "User not found");
+        }
         const userRole = userRows[0].rolename;
         if(comment.user_id !== userId && userRole !== "MANAGER") {
             throw new ApiError(403, "You cannot edit this comment");
@@ -117,6 +120,28 @@ const Comment = {
             },
             created_at: row.created_at
         };
+    },
+    
+    deleteComment: async (commentId, userId) => {
+        const [commentRow] = await pool.query(`select * from ticket_comments where id=?`,[commentId]);
+        if(commentRow.length==0){
+            throw new ApiError(404, "Comment not found");
+        }
+        const comment=commentRow[0];
+        const [userRows] = await pool.query(`
+            select r.name as rolename from users u
+            join roles r on u.role_id=r.id
+            where u.id=?
+        `, [userId]);
+        if(userRows.length==0){
+            throw new ApiError(401, "User not found");
+        }
+        const userRole = userRows[0].rolename;
+        if(comment.user_id !== userId && userRole !== "MANAGER") {
+            throw new ApiError(403, "You cannot delete this comment");
+        }
+        await pool.query(`delete from ticket_comments where id = ?`, [commentId]);
+        return;
     }
 }
 

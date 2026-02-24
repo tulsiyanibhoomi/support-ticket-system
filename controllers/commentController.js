@@ -65,3 +65,16 @@ exports.updateComment = async (req,res,next)=> {
         next(err);
     }
 }
+
+exports.deleteComment=async(req,res,next)=> {
+    try{
+        const commentId = req.params.id;
+        const userId = req.user.id;
+
+        await Comment.deleteComment(commentId, userId);
+        return res.status(204).send();
+    }
+    catch(err) {
+        next(err);
+    }
+}

@@ -248,6 +248,14 @@ const Ticket = {
                 created_at: row.assigned_user_created_at
             },
             created_at: row.created_at};
+    },
+    deleteTicket: async (ticketId) => {
+        const [ticketRows] = await pool.query(`select * from tickets where id = ?`, [ticketId]);
+        if(ticketRows.length==0){
+            throw new ApiError(404, "ticket not found");
+        }
+        await pool.query("delete from tickets where id = ?", [ticketId]);
+        return;
     }
 }
 

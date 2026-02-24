@@ -54,3 +54,14 @@ exports.updateTicketStatus = async (req,res,next)=>{
         next(err);
     }
 }
+
+exports.deleteTicket = async(req, res, next) => {
+    try {
+        const ticketId = req.params.id;
+        await Ticket.deleteTicket(ticketId);
+        return res.status(204).send();
+    }
+    catch(err){
+        next(err);
+    }
+}
